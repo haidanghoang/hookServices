@@ -16,11 +16,18 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.post('/hooks', (req, res) => {
+const API_KEY = process.env.API_KEY || 'my-api-key';
+
+app.post('/hooks/notifications', (req, res) => {
+  if (req.headers['x-api-key'] !== API_KEY) {
+    res.status(401).send('Unauthorized Request.');
+    return;
+  }
+
   res.json({
-    response: 'Received.',
     ...req.body,
   });
+
   requests.push(req.body);
 });
 
